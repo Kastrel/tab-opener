@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+<meta charset="utf-8"/>
+<title>Opening lots of tabs</title>
+</head>
+<body>
+    <h1>Open lots of tabs</h1>
+    <form>
+        Number of tabs: <input type="text" name="tabNumber">
+    </form>
+    <!--Fake submit button because for some reason setInterval doesn't work within forms-->
+    <button onclick="sub(1)">Submit</button>
+    <button onclick="sub(0)">Run forever</button>
+    <button onclick="stop()">Stop</button><br><br>
+    <div id="number"></div>
+    
+    
+    <script type="text/javascript">
+        /* This script allows the user to specify a number of tabs to open, and then opens them at defined
+        intervals until done, or continues to open them forever if specified. The purpose is to maximise 
+        charitable donations accrued by Tab for a Cause, so the ads on each tab need to load before it is closed.
+        You may need to adjust openfrequency and closefrequence to achieve this for your computer, and possible 
+        change browser settings to get new tabs rather than windows to open. There is a stop button, but it may
+        be hard to click when program is running, but it responds to Alt-F4.
+        */
+        var timer; 
+        var counter = 0; //Number of tabs to open, if specified
+        var openfrequency = 2000; //How often to open a tab, in milliseconds
+        var closefrequency = 10000; //How often to close a tab, in milliseconds
+        var url = "http://www.tabforacause.org/donate/?charity=102&uid=11012161&p=8885433d-0ddb-47ff-b244-feefad559df0";
+            //The tab to open every time
+        
+        /* Run function tab(x) every openfrequency milliseconds */
+        function sub(x)  
+        {
+            timer=setInterval(function(){tab(x)},openfrequency);
+            counter = 0;
+        }
+         
+        /* If Submit button is clicked, open a new tab until counter reaches number specified in HTML box,
+           then alert "Done!" and stop.
+           If Run forever button is clicked, open a tab every time called until stopped */
+        function tab(x) {
+            if (x == 1) {
+                if (counter < document.getElementsByName("tabNumber")[0].value) {
+                    var win = window.open(url, "_blank");
+                    setTimeout(function(){win.close();},closefrequency);
+                    counter++;  
+                }
+                else 
+                {
+                    clearTimeout(timer);
+                    alert("Done!");
+                }
+            }
+            else {
+                var win = window.open(url, "_blank");
+                setTimeout(function(){win.close();},closefrequency);
+            }
+        }
+        
+        /* Stop opening new tabs when stop button is clicked */
+        function stop() {
+            clearTimeout(timer);
+        }
+    </script>
+</body>
+</html>
